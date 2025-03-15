@@ -17,6 +17,10 @@
   --nav-font: "Poppins",  sans-serif;
 }
 
+.g-recaptcha-error {
+    display: none;
+}
+
 /* Global Colors - The following color variables are used throughout the website. Updating them here will change the color scheme of the entire website */
 :root { 
   --background-color: #ffffff; /* Background color for the entire website, including individual sections */
@@ -91,8 +95,7 @@ h6 {
 ------------------------------*/
 .php-email-form .error-message {
   display: none;
-  background: #df1529;
-  color: #ffffff;
+  color: black;
   text-align: left;
   padding: 15px;
   margin-bottom: 24px;
@@ -107,6 +110,12 @@ h6 {
   padding: 15px;
   margin-bottom: 24px;
   font-weight: 600;
+}
+
+.php-email-form message-container{
+    padding: 15px;
+    margin-bottom: 24px;
+    font-weight: 600;
 }
 
 .php-email-form .loading {
@@ -1265,6 +1274,11 @@ section,
   font-size: 20px;
   margin-right: 8px;
   color: var(--accent-color);
+}
+
+.small-img {
+    width: 60px;
+    height: auto;
 }
 
 /*--------------------------------------------------------------

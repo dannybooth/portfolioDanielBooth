@@ -3,7 +3,9 @@
 
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
   <title>Daniel Booth CV</title>
   <script src="https://www.google.com/recaptcha/api.js" async defer></script>
   <meta content="" name="description">
@@ -325,7 +327,7 @@
 
     <div class="container d-flex justify-content-center" data-aos="fade-up" data-aos-delay="200">
         <div class="col-lg-7">
-        <form action="assets/php/submit.php" method="post" class="php-email-form">
+        <form action="assets/php/submit.php" method="POST" class="php-email-form" id="contact-form">
             <div class="row gy-4">
 
             <div class="col-md-6">
@@ -351,13 +353,10 @@
             <div class="form-group text-center">
                             <div class="g-recaptcha" data-sitekey="6Ldb6_EqAAAAAICVSJBZ8fNIQ3qOnddNhU4odGL4"></div>
             </div>
-
             <div class="col-md-12 text-center">
-                <div class="loading">Loading</div>
-                <div class="error-message"></div>
-                <div class="sent-message">Your message has been sent. Thank you!</div>
-
-                <button type="submit">Send Message</button>
+                <div class="loading" style="display: none;">Loading</div>
+                <div class="message-container" id="message-container"></div>
+                <button type="submit" class="btn btn-primary btn-block">Send Message</button>
             </div>
 
             </div>
@@ -395,7 +394,6 @@
 
   <!-- Vendor JS Files -->
   <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="assets/vendor/php-email-form/validate.js"></script>
   <script src="assets/vendor/aos/aos.js"></script>
   <script src="assets/vendor/typed.js/typed.umd.js"></script>
   <script src="assets/vendor/purecounter/purecounter_vanilla.js"></script>
@@ -407,41 +405,49 @@
 
   <!-- Main JS File -->
   <script src="assets/js/main.js">
-  document.getElementById("contact-form").addEventListener("submit", function (event) {
-    event.preventDefault(); // Prevent default form submission
+  </script>
+  <script>
+      document.getElementById("contact-form").addEventListener("submit", function (event) {
+        event.preventDefault(); // Prevent default form submission
+        var loadingElement = document.querySelector('.loading');
+        loadingElement.style.display = 'block';
 
-    var formData = new FormData(this);
+        var formData = new FormData(this);
 
-    var recaptchaResponse = grecaptcha.getResponse();
-    if (!recaptchaResponse) {
-        document.getElementById("message-container").innerHTML =
-            '<div class="alert alert-danger">Please complete the reCAPTCHA verification.</div>';
-        return;
-    }
-    formData.append("g-recaptcha-response", recaptchaResponse);
-
-    fetch("submit.php", {
-        method: "POST",
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
+        var recaptchaResponse = grecaptcha.getResponse();
+        if (!recaptchaResponse) {
+            loadingElement.style.display = 'none';
             document.getElementById("message-container").innerHTML =
-                '<div class="alert alert-success">Your message was sent successfully!</div>';
-            document.getElementById("contact-form").reset();
-            grecaptcha.reset(); // Reset reCAPTCHA
-        } else {
-            document.getElementById("message-container").innerHTML =
-                '<div class="alert alert-danger">' + data.error + '</div>';
+                '<div class="alert alert-danger">Please complete the reCAPTCHA verification.</div>';
+            return;
         }
-    })
-    .catch(error => {
-        document.getElementById("message-container").innerHTML =
-            '<div class="alert alert-danger">There was an error sending your message.</div>';
-        console.log("Error:", error);
+        formData.append("g-recaptcha-response", recaptchaResponse);
+
+        fetch("assets/php/submit.php", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                loadingElement.style.display = 'none';
+                document.getElementById("message-container").innerHTML =
+                    '<div class="alert alert-success">Your message was sent successfully!</div>';
+                document.getElementById("contact-form").reset();
+                grecaptcha.reset();
+            } else {
+                loadingElement.style.display = 'none';
+                document.getElementById("message-container").innerHTML =
+                    '<div class="alert alert-danger">' + data.error + '</div>';
+            }
+        })
+        .catch(error => {
+            loadingElement.style.display = 'none';
+            document.getElementById("message-container").innerHTML =
+                '<div class="alert alert-danger">There was an error sending your message.</div>';
+            console.log("Error:", error);
+        });
     });
-});
   </script>
 
 </body>
